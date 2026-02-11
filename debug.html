@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConceptForgeAI - Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #0a0e1a;
+            color: white;
+        }
+        .debug-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .error { color: #ff6b6b; }
+        .success { color: #51cf66; }
+        .warning { color: #ffd43b; }
+    </style>
+</head>
+<body>
+    <h1>ConceptForgeAI Debug Page</h1>
+    
+    <div class="debug-section">
+        <h2>File Loading Test</h2>
+        <div id="fileTest">Testing...</div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>JavaScript Errors</h2>
+        <div id="jsErrors">No errors detected</div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Element Availability</h2>
+        <div id="elementTest">Testing...</div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Quick Actions</h2>
+        <button onclick="testBasicFunctionality()" style="margin: 5px; padding: 10px;">Test Basic Functionality</button>
+        <button onclick="window.open('index.html', '_blank')" style="margin: 5px; padding: 10px;">Open Main App</button>
+        <button onclick="window.open('test.html', '_blank')" style="margin: 5px; padding: 10px;">Open Test Page</button>
+    </div>
+
+    <script>
+        // Capture JavaScript errors
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            document.getElementById('jsErrors').innerHTML = `
+                <div class="error">Error: ${msg}</div>
+                <div>File: ${url}</div>
+                <div>Line: ${lineNo}, Column: ${columnNo}</div>
+            `;
+            return false;
+        };
+
+        // Test file loading
+        function testFileLoading() {
+            const files = ['config.js', 'data-manager.js', 'script.js', 'styles.css'];
+            let results = '';
+            
+            files.forEach(file => {
+                fetch(file)
+                    .then(response => {
+                        if (response.ok) {
+                            results += `<div class="success">✓ ${file} loaded successfully</div>`;
+                        } else {
+                            results += `<div class="error">✗ ${file} failed to load (${response.status})</div>`;
+                        }
+                        document.getElementById('fileTest').innerHTML = results;
+                    })
+                    .catch(error => {
+                        results += `<div class="error">✗ ${file} error: ${error.message}</div>`;
+                        document.getElementById('fileTest').innerHTML = results;
+                    });
+            });
+        }
+
+        // Test basic functionality
+        function testBasicFunctionality() {
+            try {
+                // Test if classes are available
+                if (typeof DataManager !== 'undefined') {
+                    document.getElementById('elementTest').innerHTML += '<div class="success">✓ DataManager class available</div>';
+                } else {
+                    document.getElementById('elementTest').innerHTML += '<div class="error">✗ DataManager class not available</div>';
+                }
+                
+                if (typeof ResearchDatabase !== 'undefined') {
+                    document.getElementById('elementTest').innerHTML += '<div class="success">✓ ResearchDatabase class available</div>';
+                } else {
+                    document.getElementById('elementTest').innerHTML += '<div class="error">✗ ResearchDatabase class not available</div>';
+                }
+                
+                if (typeof ConceptForgeAI !== 'undefined') {
+                    document.getElementById('elementTest').innerHTML += '<div class="success">✓ ConceptForgeAI class available</div>';
+                } else {
+                    document.getElementById('elementTest').innerHTML += '<div class="error">✗ ConceptForgeAI class not available</div>';
+                }
+                
+            } catch (error) {
+                document.getElementById('elementTest').innerHTML += `<div class="error">Error testing: ${error.message}</div>`;
+            }
+        }
+
+        // Run tests on load
+        document.addEventListener('DOMContentLoaded', function() {
+            testFileLoading();
+            setTimeout(testBasicFunctionality, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+lambda/node_modules/
+
+# Build files
+*.zip
+lambda-package.zip
+
+# AWS
+.aws/
+*.pem
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+temp/
+cloudformation-deploy.yaml
+cloudformation-simple.yaml
+bucket-policy.json

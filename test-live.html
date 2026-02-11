@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConceptForgeAI - Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        h1 {
+            background: linear-gradient(135deg, #00d4ff 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+            margin-bottom: 1rem;
+        }
+        button {
+            background: linear-gradient(135deg, #00d4ff 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        button:hover { transform: translateY(-2px); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .result {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        .error { color: #ff6b6b; }
+        .success { color: #06ffa5; }
+        .info { color: #00d4ff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 ConceptForgeAI - Live Test</h1>
+        
+        <p style="margin-bottom: 1rem; color: #a0a9c0;">
+            Test your deployed API with real AI validation
+        </p>
+
+        <textarea id="ideaInput" placeholder="Enter your business idea here...">A mobile app that uses AI to help people manage their personal finances by analyzing spending patterns and providing personalized budgeting recommendations.</textarea>
+
+        <button id="testBtn" onclick="testAPI()">🚀 Test Real AI Validation</button>
+
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        const API_ENDPOINT = 'https://fsnpltvv61.execute-api.us-east-1.amazonaws.com/prod/validate';
+
+        async function testAPI() {
+            const btn = document.getElementById('testBtn');
+            const result = document.getElementById('result');
+            const idea = document.getElementById('ideaInput').value.trim();
+
+            if (!idea) {
+                result.style.display = 'block';
+                result.className = 'result error';
+                result.textContent = '❌ Please enter an idea first';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Testing API...';
+            result.style.display = 'block';
+            result.className = 'result info';
+            result.textContent = '🔄 Calling API...\n\nEndpoint: ' + API_ENDPOINT + '\n\nThis may take 5-10 seconds for real AI processing...';
+
+            try {
+                const startTime = Date.now();
+                
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ idea: idea })
+                });
+
+                const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                result.className = 'result success';
+                result.textContent = `✅ SUCCESS! (${duration}s)\n\n` +
+                    `📊 VALIDATION RESULTS:\n\n` +
+                    `Uniqueness Score: ${data.uniquenessScore}/100\n` +
+                    `Commercial Score: ${data.commercialScore}/100\n` +
+                    `Risk Level: ${data.riskLevel}\n\n` +
+                    `🎯 Target Industries:\n${data.targetIndustries.map(i => '  • ' + i).join('\n')}\n\n` +
+                    `⚠️ Key Risks:\n${data.keyRisks.map(r => '  • ' + r).join('\n')}\n\n` +
+                    `💡 Improvements:\n${data.improvements.map(i => '  • ' + i).join('\n')}\n\n` +
+                    `📚 Related Research:\n${data.relatedPapers.map(p => '  • ' + p).join('\n')}\n\n` +
+                    `⏱️ Response Time: ${duration} seconds\n` +
+                    `${duration > 2 ? '✅ Real AI (slow response = real processing)' : '⚠️ Might be mock data (too fast)'}`;
+
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = `❌ ERROR:\n\n${error.message}\n\n` +
+                    `Common Issues:\n` +
+                    `1. Bedrock not enabled - Go to AWS Console → Bedrock → Enable Claude 3 Haiku\n` +
+                    `2. CORS issue - Check API Gateway CORS settings\n` +
+                    `3. Lambda timeout - Check CloudWatch logs\n` +
+                    `4. IAM permissions - Lambda needs Bedrock access\n\n` +
+                    `Check AWS CloudWatch logs for details.`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🚀 Test Real AI Validation';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConceptForgeAI - AI-Powered Idea Validation Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-brain nav-icon"></i>
+                <span class="brand-text">ConceptForge<span class="brand-ai">AI</span></span>
+            </div>
+            <div class="nav-menu">
+                <a href="#" class="nav-link active" data-page="dashboard">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#" class="nav-link" data-page="research">
+                    <i class="fas fa-search"></i> Research
+                </a>
+                <a href="#" class="nav-link" data-page="analytics">
+                    <i class="fas fa-chart-line"></i> Analytics
+                </a>
+                <a href="#" class="nav-link" data-page="history">
+                    <i class="fas fa-history"></i> History
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page active">
+            <div class="page-header">
+                <h1 class="page-title">Idea Validation Dashboard</h1>
+                <p class="page-subtitle">Transform your concepts into validated opportunities with AI-powered insights</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Input Section -->
+                <div class="input-section">
+                    <div class="glass-card input-card">
+                        <div class="card-header">
+                            <h2>Describe Your Concept</h2>
+                            <div class="ai-indicator">
+                                <div class="ai-pulse"></div>
+                                <span>AI Ready</span>
+                            </div>
+                        </div>
+                        
+                        <div class="input-container">
+                            <textarea 
+                                id="ideaInput" 
+                                placeholder="Enter your startup idea, research concept, or innovation here. Be specific about the problem you're solving, your target audience, and your proposed solution..."
+                                rows="8"
+                            ></textarea>
+                            <div class="input-footer">
+                                <div class="char-counter">
+                                    <span id="charCount">0</span> / 2000 characters
+                                </div>
+                                <div class="input-actions">
+                                    <button id="clearBtn" class="btn-secondary">
+                                        <i class="fas fa-trash"></i> Clear
+                                    </button>
+                                    <button id="validateBtn" class="btn-primary">
+                                        <div class="btn-content">
+                                            <i class="fas fa-rocket btn-icon"></i>
+                                            <span class="btn-text">Forge Analysis</span>
+                                            <span class="btn-loading" style="display: none;">
+                                                <i class="fas fa-spinner fa-spin"></i> Analyzing...
+                                            </span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Visual Element -->
+                <div class="ai-visual">
+                    <div class="glass-card ai-card">
+                        <div class="ai-brain">
+                            <div class="brain-core">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="neural-network">
+                                <div class="neural-node" style="--delay: 0s"></div>
+                                <div class="neural-node" style="--delay: 0.5s"></div>
+                                <div class="neural-node" style="--delay: 1s"></div>
+                                <div class="neural-node" style="--delay: 1.5s"></div>
+                                <div class="neural-node" style="--delay: 2s"></div>
+                            </div>
+                        </div>
+                        <div class="ai-status">
+                            <div class="status-indicator"></div>
+                            <span>AI Engine Online</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="results-section" style="display: none;">
+                <div class="results-header">
+                    <h2>Validation Analysis</h2>
+                    <div class="analysis-meta">
+                        <span class="analysis-time">Analysis completed in 2.3s</span>
+                        <button class="btn-export">
+                            <i class="fas fa-download"></i> Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="glass-card metric-card uniqueness">
+                        <div class="metric-header">
+                            <h3>Uniqueness Score</h3>
+                            <i class="fas fa-star metric-icon"></i>
+                        </div>
+                        <div class="metric-value">
+                            <div class="score-display">
+                                <span id="uniquenessScore" class="score-number">0</span>
+                                <span class="score-suffix">/100</span>
+                            </div>
+                            <div class="score-bar">
+                                <div class="score-fill uniqueness-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <p class="metric-description">Market differentiation potential</p>
+                    </div>
+
+                    <div class="glass-card metric-card commercial">
+                        <div class="metric-header">
+                            <h3>Commercial Readiness</h3>
+                            <i class="fas fa-chart-line metric-icon"></i>
+                        </div>
+                        <div class="metric-value">
+                            <div class="score-display">
+                                <span id="commercialScore" class="score-number">0</span>
+                                <span class="score-suffix">/100</span>
+                            </div>
+                            <div class="score-bar">
+                                <div class="score-fill commercial-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <p class="metric-description">Revenue generation potential</p>
+                    </div>
+
+                    <div class="glass-card metric-card risk">
+                        <div class="metric-header">
+                            <h3>Risk Assessment</h3>
+                            <i class="fas fa-shield-alt metric-icon"></i>
+                        </div>
+                        <div class="metric-value">
+                            <div class="risk-level">
+                                <span id="riskLevel" class="risk-text">Low</span>
+                                <div class="risk-indicator">
+                                    <div class="risk-dot"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="metric-description">Overall project risk level</p>
+                    </div>
+                </div>
+
+                <div class="insights-grid">
+                    <div class="glass-card insight-card">
+                        <div class="insight-header">
+                            <h3><i class="fas fa-industry"></i> Target Industries</h3>
+                        </div>
+                        <div class="insight-content">
+                            <ul id="targetIndustries" class="insight-list"></ul>
+                            <div class="quick-actions">
+                                <a href="#" class="action-chip" onclick="app.searchRelatedResearch()">
+                                    <i class="fas fa-search"></i> Find Research
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card insight-card">
+                        <div class="insight-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Key Risks</h3>
+                        </div>
+                        <div class="insight-content">
+                            <ul id="keyRisks" class="insight-list risk-list"></ul>
+                            <div class="quick-actions">
+                                <a href="#" class="action-chip" onclick="app.viewSimilarRisks()">
+                                    <i class="fas fa-history"></i> Similar Cases
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card insight-card">
+                        <div class="insight-header">
+                            <h3><i class="fas fa-lightbulb"></i> Recommendations</h3>
+                        </div>
+                        <div class="insight-content">
+                            <ul id="improvements" class="insight-list improvement-list"></ul>
+                            <div class="quick-actions">
+                                <a href="#" class="action-chip" onclick="app.saveToHistory()">
+                                    <i class="fas fa-bookmark"></i> Save Analysis
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card insight-card">
+                        <div class="insight-header">
+                            <h3><i class="fas fa-file-alt"></i> Related Research</h3>
+                        </div>
+                        <div class="insight-content">
+                            <ul id="relatedPapers" class="insight-list papers-list"></ul>
+                            <div class="quick-actions">
+                                <a href="#" class="action-chip" onclick="app.switchToPage('research')">
+                                    <i class="fas fa-external-link-alt"></i> Explore More
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Research Page -->
+        <div id="research" class="page">
+            <div class="page-header">
+                <h1 class="page-title">Research Intelligence</h1>
+                <p class="page-subtitle">Discover existing research and identify knowledge gaps in your domain</p>
+            </div>
+            
+            <div class="research-content">
+                <div class="research-grid">
+                    <div class="glass-card search-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-search"></i> Research Query</h3>
+                        </div>
+                        <div class="search-container">
+                            <input type="text" id="researchQuery" placeholder="Enter research topic, keywords, or domain..." />
+                            <button id="searchResearchBtn" class="btn-primary">
+                                <i class="fas fa-search"></i> Search Papers
+                            </button>
+                        </div>
+                        <div class="search-filters">
+                            <select id="yearFilter">
+                                <option value="">All Years</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                            </select>
+                            <select id="domainFilter">
+                                <option value="">All Domains</option>
+                                <option value="ai">Artificial Intelligence</option>
+                                <option value="health">Healthcare</option>
+                                <option value="finance">Finance</option>
+                                <option value="education">Education</option>
+                                <option value="sustainability">Sustainability</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="glass-card gaps-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-lightbulb"></i> Research Gaps</h3>
+                        </div>
+                        <div id="researchGaps" class="gaps-content">
+                            <p class="placeholder-text">Enter a research query to discover knowledge gaps and opportunities</p>
+                        </div>
+                        <div class="quick-actions">
+                            <a href="#" class="action-chip" onclick="app.switchToPage('dashboard')">
+                                <i class="fas fa-flask"></i> Validate Idea
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="researchResults" class="research-results" style="display: none;">
+                    <div class="results-header">
+                        <h3>Research Papers</h3>
+                        <div class="results-meta">
+                            <span id="resultsCount">0 papers found</span>
+                        </div>
+                    </div>
+                    <div id="papersList" class="papers-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Page -->
+        <div id="analytics" class="page">
+            <div class="page-header">
+                <h1 class="page-title">Analytics Dashboard</h1>
+                <p class="page-subtitle">Track your validation history and success patterns</p>
+            </div>
+            
+            <div class="analytics-content">
+                <div class="analytics-grid">
+                    <div class="glass-card stats-card">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalValidations">0</div>
+                            <div class="stat-label">Total Validations</div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card stats-card">
+                        <div class="stat-item">
+                            <div class="stat-value" id="avgUniqueness">0</div>
+                            <div class="stat-label">Avg Uniqueness Score</div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card stats-card">
+                        <div class="stat-item">
+                            <div class="stat-value" id="avgCommercial">0</div>
+                            <div class="stat-label">Avg Commercial Score</div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card stats-card">
+                        <div class="stat-item">
+                            <div class="stat-value" id="topIndustry">-</div>
+                            <div class="stat-label">Top Industry</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="glass-card chart-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> Score Trends</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="scoresChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="glass-card chart-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-pie-chart"></i> Industry Distribution</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="industryChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card insights-summary">
+                    <div class="card-header">
+                        <h3><i class="fas fa-brain"></i> AI Insights</h3>
+                    </div>
+                    <div id="analyticsInsights" class="insights-content">
+                        <p class="placeholder-text">Complete more validations to see personalized insights and patterns</p>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="#" class="action-chip" onclick="app.switchToPage('dashboard')">
+                            <i class="fas fa-plus"></i> New Validation
+                        </a>
+                        <a href="#" class="action-chip" onclick="app.switchToPage('history')">
+                            <i class="fas fa-history"></i> View History
+                        </a>
+                        <a href="#" class="action-chip" onclick="app.exportReport()">
+                            <i class="fas fa-download"></i> Export Data
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Page -->
+        <div id="history" class="page">
+            <div class="page-header">
+                <h1 class="page-title">Validation History</h1>
+                <p class="page-subtitle">Review your previous idea validations and insights</p>
+            </div>
+            
+            <div class="history-content">
+                <div class="history-controls">
+                    <div class="glass-card controls-card">
+                        <div class="controls-row">
+                            <div class="search-box">
+                                <input type="text" id="historySearch" placeholder="Search validations..." />
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="filter-controls">
+                                <select id="sortBy">
+                                    <option value="date">Sort by Date</option>
+                                    <option value="uniqueness">Sort by Uniqueness</option>
+                                    <option value="commercial">Sort by Commercial Score</option>
+                                </select>
+                                <select id="filterRisk">
+                                    <option value="">All Risk Levels</option>
+                                    <option value="Low">Low Risk</option>
+                                    <option value="Medium">Medium Risk</option>
+                                    <option value="High">High Risk</option>
+                                </select>
+                            </div>
+                            <button id="clearHistoryBtn" class="btn-secondary">
+                                <i class="fas fa-trash"></i> Clear All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="historyList" class="history-list">
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <h3>No Validations Yet</h3>
+                        <p>Start validating ideas to build your history</p>
+                        <button class="btn-primary" onclick="switchToPage('dashboard')">
+                            <i class="fas fa-plus"></i> Create First Validation
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="data-manager.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

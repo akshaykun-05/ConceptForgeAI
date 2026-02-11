@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConceptForgeAI - Working Version</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #0a0e1a;
+            --secondary-bg: #1a1f2e;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-blue: #00d4ff;
+            --neon-purple: #8b5cf6;
+            --neon-cyan: #06ffa5;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a9c0;
+            --text-muted: #6b7280;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.5);
+            --neon-gradient: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(ellipse at top, var(--secondary-bg) 0%, var(--primary-bg) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .brand i {
+            font-size: 2.5rem;
+            background: var(--neon-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .brand-ai {
+            background: var(--neon-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .input-section textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        .input-section textarea:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary {
+            background: var(--neon-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1rem auto;
+            font-size: 1.1rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--neon-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .insights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .insight {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+        }
+
+        .insight h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .insight ul {
+            list-style: none;
+        }
+
+        .insight li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .insight li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--neon-blue);
+            font-weight: bold;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            color: var(--text-primary);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .char-counter {
+            text-align: right;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .brand {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .brand i, .brand-text {
+                font-size: 2rem;
+            }
+            
+            .metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .insights {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="brand">
+                <i class="fas fa-brain"></i>
+                <span class="brand-text">ConceptForge<span class="brand-ai">AI</span></span>
+            </div>
+            <p class="subtitle">AI-Powered Idea Validation Platform</p>
+        </div>
+
+        <div class="glass-card input-section">
+            <h2>Describe Your Concept</h2>
+            <textarea id="ideaInput" placeholder="Enter your startup idea, research concept, or innovation here. Be specific about the problem you're solving, your target audience, and your proposed solution..."></textarea>
+            <div class="char-counter">
+                <span id="charCount">0</span> / 2000 characters
+            </div>
+            <button id="validateBtn" class="btn-primary">
+                <i class="fas fa-rocket"></i>
+                <span class="btn-text">Forge Analysis</span>
+            </button>
+        </div>
+
+        <div id="results" class="results">
+            <div class="glass-card">
+                <h2>Validation Analysis</h2>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <div class="metric-value" id="uniquenessScore">0</div>
+                        <div class="metric-label">Uniqueness Score</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="commercialScore">0</div>
+                        <div class="metric-label">Commercial Readiness</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value" id="riskLevel">Low</div>
+                        <div class="metric-label">Risk Level</div>
+                    </div>
+                </div>
+
+                <div class="insights">
+                    <div class="insight">
+                        <h3><i class="fas fa-industry"></i> Target Industries</h3>
+                        <ul id="targetIndustries"></ul>
+                    </div>
+                    <div class="insight">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Key Risks</h3>
+                        <ul id="keyRisks"></ul>
+                    </div>
+                    <div class="insight">
+                        <h3><i class="fas fa-lightbulb"></i> Recommendations</h3>
+                        <ul id="improvements"></ul>
+                    </div>
+                    <div class="insight">
+                        <h3><i class="fas fa-file-alt"></i> Related Research</h3>
+                        <ul id="relatedPapers"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple configuration
+        const CONFIG = {
+            MAX_IDEA_LENGTH: 2000,
+            MIN_IDEA_LENGTH: 10,
+            USE_MOCK_DATA: true
+        };
+
+        class SimpleConceptForge {
+            constructor() {
+                this.ideaInput = document.getElementById('ideaInput');
+                this.validateBtn = document.getElementById('validateBtn');
+                this.charCount = document.getElementById('charCount');
+                this.results = document.getElementById('results');
+                
+                this.bindEvents();
+                this.updateCharCounter();
+            }
+
+            bindEvents() {
+                this.validateBtn.addEventListener('click', () => this.validateIdea());
+                this.ideaInput.addEventListener('input', () => this.updateCharCounter());
+            }
+
+            updateCharCounter() {
+                const length = this.ideaInput.value.length;
+                this.charCount.textContent = length;
+                
+                if (length > CONFIG.MAX_IDEA_LENGTH * 0.9) {
+                    this.charCount.style.color = '#ff6b6b';
+                } else if (length > CONFIG.MAX_IDEA_LENGTH * 0.7) {
+                    this.charCount.style.color = '#ffd43b';
+                } else {
+                    this.charCount.style.color = '#6b7280';
+                }
+            }
+
+            async validateIdea() {
+                const idea = this.ideaInput.value.trim();
+                
+                if (!idea) {
+                    this.showNotification('Please enter your concept first!', 'warning');
+                    return;
+                }
+                
+                if (idea.length < CONFIG.MIN_IDEA_LENGTH) {
+                    this.showNotification(`Please provide more detail. Your concept should be at least ${CONFIG.MIN_IDEA_LENGTH} characters.`, 'warning');
+                    return;
+                }
+                
+                if (idea.length > CONFIG.MAX_IDEA_LENGTH) {
+                    this.showNotification(`Your concept is too long. Please keep it under ${CONFIG.MAX_IDEA_LENGTH} characters.`, 'warning');
+                    return;
+                }
+
+                this.setLoadingState(true);
+                
+                try {
+                    // Simulate API call
+                    await this.delay(2000);
+                    const result = this.generateMockValidation(idea);
+                    this.displayResults(result);
+                    this.showNotification('Validation completed successfully!', 'success');
+                } catch (error) {
+                    this.showNotification('Sorry, there was an error. Please try again.', 'error');
+                } finally {
+                    this.setLoadingState(false);
+                }
+            }
+
+            generateMockValidation(idea) {
+                const words = idea.toLowerCase().split(' ');
+                const hasUniqueKeywords = words.some(word => 
+                    ['innovative', 'unique', 'revolutionary', 'novel', 'breakthrough', 'disruptive'].includes(word)
+                );
+                
+                const uniquenessScore = hasUniqueKeywords ? 
+                    Math.floor(Math.random() * 25) + 75 : 
+                    Math.floor(Math.random() * 40) + 35;
+                    
+                const commercialScore = idea.length > 150 ? 
+                    Math.floor(Math.random() * 20) + 70 : 
+                    Math.floor(Math.random() * 30) + 50;
+
+                const avgScore = (uniquenessScore + commercialScore) / 2;
+                const riskLevel = avgScore >= 75 ? 'Low' : avgScore >= 50 ? 'Medium' : 'High';
+
+                return {
+                    uniquenessScore,
+                    commercialScore,
+                    riskLevel,
+                    targetIndustries: ['Technology & AI', 'Business Services', 'Innovation Consulting'],
+                    keyRisks: [
+                        'Market competition from established players',
+                        'Customer acquisition challenges',
+                        'Technical implementation complexity',
+                        'Regulatory compliance requirements'
+                    ],
+                    improvements: [
+                        'Conduct comprehensive market research',
+                        'Develop minimum viable product (MVP)',
+                        'Create detailed financial projections',
+                        'Build strategic partnerships',
+                        'Investigate intellectual property protection'
+                    ],
+                    relatedPapers: [
+                        'Innovation Success Factors in Digital Markets (Harvard Business Review, 2023)',
+                        'Startup Validation Methodologies (MIT Sloan, 2023)',
+                        'Technology Commercialization Strategies (Nature Innovation, 2022)',
+                        'Market Entry Timing and Success Rates (Journal of Business Strategy, 2023)'
+                    ]
+                };
+            }
+
+            displayResults(result) {
+                // Animate scores
+                this.animateScore('uniquenessScore', result.uniquenessScore);
+                this.animateScore('commercialScore', result.commercialScore);
+                
+                // Update risk level
+                document.getElementById('riskLevel').textContent = result.riskLevel;
+                
+                // Update lists
+                this.updateList('targetIndustries', result.targetIndustries);
+                this.updateList('keyRisks', result.keyRisks);
+                this.updateList('improvements', result.improvements);
+                this.updateList('relatedPapers', result.relatedPapers);
+                
+                // Show results
+                this.results.classList.add('show');
+                setTimeout(() => {
+                    this.results.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            }
+
+            animateScore(elementId, targetScore) {
+                const element = document.getElementById(elementId);
+                let currentScore = 0;
+                const increment = targetScore / 50;
+                
+                const animation = setInterval(() => {
+                    currentScore += increment;
+                    if (currentScore >= targetScore) {
+                        currentScore = targetScore;
+                        clearInterval(animation);
+                    }
+                    element.textContent = Math.round(currentScore);
+                }, 30);
+            }
+
+            updateList(elementId, items) {
+                const element = document.getElementById(elementId);
+                element.innerHTML = '';
+                
+                items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    element.appendChild(li);
+                });
+            }
+
+            setLoadingState(isLoading) {
+                this.validateBtn.disabled = isLoading;
+                if (isLoading) {
+                    this.validateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+                } else {
+                    this.validateBtn.innerHTML = '<i class="fas fa-rocket"></i> <span class="btn-text">Forge Analysis</span>';
+                }
+            }
+
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                
+                const iconMap = {
+                    'error': 'exclamation-circle',
+                    'warning': 'exclamation-triangle',
+                    'success': 'check-circle',
+                    'info': 'info-circle'
+                };
+                
+                notification.innerHTML = `
+                    <i class="fas fa-${iconMap[type] || 'info-circle'}"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideInRight 0.3s ease-out reverse';
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new SimpleConceptForge();
+        });
+    </script>
+</body>
+</html>
