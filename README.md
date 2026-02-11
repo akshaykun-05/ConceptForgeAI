@@ -1,8 +1,21 @@
 # ConceptForgeAI - AI-Powered Idea Validation Platform
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Visit_Site-blue?style=for-the-badge)](http://conceptforge-website-live.s3-website-us-east-1.amazonaws.com)
+[![AWS](https://img.shields.io/badge/AWS-Serverless-orange?style=flat-square)](https://aws.amazon.com/)
+[![Bedrock](https://img.shields.io/badge/Amazon-Bedrock_AI-blue?style=flat-square)](https://aws.amazon.com/bedrock/)
+[![Node](https://img.shields.io/badge/Node.js-18.x-brightgreen?style=flat-square)](https://nodejs.org/)
+
 > *"Every year, startups and research teams waste months building ideas that were never viable in the first place. Not because they lacked skills — but because they lacked early validation."*
 
 ConceptForgeAI is a premium AI-powered platform that provides instant validation insights for startup ideas, research concepts, and product innovations. Think of it as **Google Maps for ideas** — it tells you whether you're heading toward success or a dead end before you start the journey.
+
+## 🌐 Live Deployment
+
+**🚀 Try it now**: [http://conceptforge-website-live.s3-website-us-east-1.amazonaws.com](http://conceptforge-website-live.s3-website-us-east-1.amazonaws.com)
+
+- **Main App**: [Launch ConceptForgeAI](http://conceptforge-website-live.s3-website-us-east-1.amazonaws.com/index.html)
+- **API Test**: [Test Real AI](http://conceptforge-website-live.s3-website-us-east-1.amazonaws.com/test-live.html)
+- **Simple Version**: [Quick Demo](http://conceptforge-website-live.s3-website-us-east-1.amazonaws.com/simple.html)
 
 ## 🚀 Key Features
 
@@ -263,4 +276,24 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**ConceptForgeAI** - *Transforming ideas into validated opportunities with AI-powered insights.*
+## 🌟 Project Stats
+
+![AWS](https://img.shields.io/badge/AWS-Deployed-success?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Production-brightgreen?style=flat-square)
+![AI](https://img.shields.io/badge/AI-Bedrock_Claude-blue?style=flat-square)
+![Cost](https://img.shields.io/badge/Cost-$3%2Fmonth-orange?style=flat-square)
+
+**Live Platform**: [conceptforge-website-live.s3-website-us-east-1.amazonaws.com](http://conceptforge-website-live.s3-website-us-east-1.amazonaws.com)
+
+---
+
+<div align="center">
+
+### **ConceptForgeAI** 
+*Transforming ideas into validated opportunities with AI-powered insights.*
+
+**[🚀 Try Live Demo](http://conceptforge-website-live.s3-website-us-east-1.amazonaws.com)** • **[📖 Documentation](DEPLOY_REAL_AI.md)** • **[🐛 Report Bug](https://github.com/akshaykun-05/ConceptForgeAI/issues)** • **[✨ Request Feature](https://github.com/akshaykun-05/ConceptForgeAI/issues)**
+
+Built with ❤️ using AWS Serverless Technologies
+
+</div>
