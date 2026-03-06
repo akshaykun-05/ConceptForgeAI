@@ -47,7 +47,12 @@ class ConceptForgeAI {
     bindEvents() {
         // Dashboard events - check if elements exist before binding
         if (this.validateBtn) {
-            this.validateBtn.addEventListener('click', () => this.validateIdea());
+            this.validateBtn.addEventListener('click', () => {
+                console.log('Validate button clicked');
+                this.validateIdea();
+            });
+        } else {
+            console.error('validateBtn not found');
         }
         if (this.clearBtn) {
             this.clearBtn.addEventListener('click', () => this.clearInput());
@@ -59,6 +64,8 @@ class ConceptForgeAI {
                     this.validateIdea();
                 }
             });
+        } else {
+            console.error('ideaInput not found');
         }
 
         // Research events
@@ -180,12 +187,16 @@ class ConceptForgeAI {
     }
 
     async validateIdea() {
+        console.log('validateIdea called');
+        
         if (!this.ideaInput) {
+            console.error('Input element not found!');
             this.showNotification('Input element not found!', 'error');
             return;
         }
         
         const idea = this.ideaInput.value.trim();
+        console.log('Idea length:', idea.length);
         
         if (!idea) {
             this.showNotification('Please enter your concept first!', 'warning');
@@ -202,10 +213,12 @@ class ConceptForgeAI {
             return;
         }
 
+        console.log('Starting validation...');
         this.setLoadingState(true);
         
         try {
             const result = await this.callValidationAPI(idea);
+            console.log('Validation result:', result);
             
             // Save to local storage
             this.dataManager.addValidation({
@@ -226,14 +239,18 @@ class ConceptForgeAI {
     async callValidationAPI(idea) {
         // Use configuration for API endpoint
         const apiEndpoint = CONFIG.API_ENDPOINT;
+        console.log('API Endpoint:', apiEndpoint);
+        console.log('USE_MOCK_DATA:', CONFIG.USE_MOCK_DATA);
         
         // Check if we should use mock data (for development)
         if (CONFIG.USE_MOCK_DATA || apiEndpoint === 'YOUR_API_GATEWAY_ENDPOINT_HERE/validate') {
+            console.log('Using mock data');
             await this.delay(3000); // Simulate processing time
             return this.generateEnhancedMockValidation(idea);
         }
         
         try {
+            console.log('Calling real API...');
             const response = await fetch(apiEndpoint, {
                 method: 'POST',
                 headers: {
@@ -242,13 +259,18 @@ class ConceptForgeAI {
                 body: JSON.stringify({ idea })
             });
             
+            console.log('API Response status:', response.status);
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
-            return await response.json();
+            const data = await response.json();
+            console.log('API Response data:', data);
+            return data;
         } catch (error) {
             console.error('API call failed:', error);
+            console.log('Falling back to mock data');
             // Fallback to mock data if API fails
             await this.delay(1000);
             return this.generateEnhancedMockValidation(idea);
@@ -671,6 +693,7 @@ class ConceptForgeAI {
                 papersList.appendChild(paperElement);
             });
         }
+    }
 
     displayResearchGaps(gaps) {
         const gapsContent = this.researchGaps;
