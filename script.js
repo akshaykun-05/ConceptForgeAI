@@ -561,6 +561,8 @@ class ConceptForgeAI {
         }
 
         try {
+            let results, gaps;
+            
             console.log('Calling real research API...');
             const response = await fetch(`${CONFIG.API_ENDPOINT.replace('/validate', '/research')}`, {
                 method: 'POST',
@@ -607,22 +609,10 @@ class ConceptForgeAI {
                 });
             }
 
-        } catch (error) {
-            console.error('Research search failed:', error);
-            console.log('Falling back to local database');
-            // Fallback to mock database
-            const filters = {};
-            if (yearFilter) filters.year = yearFilter;
-            if (domainFilter) filters.domain = domainFilter;
-
-            results = this.researchDB.search(query, filters);
-            gaps = this.researchDB.identifyGaps(query, results);
-        }
-
-        this.displayResearchResults(results);
-        this.displayResearchGaps(gaps);
-        
-        this.showNotification(`Found ${results.length} relevant papers from real academic databases`, 'success');
+            this.displayResearchResults(results);
+            this.displayResearchGaps(gaps);
+            
+            this.showNotification(`Found ${results.length} relevant papers from real academic databases`, 'success');
 
         } catch (error) {
             console.error('Research search error:', error);
