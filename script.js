@@ -561,72 +561,68 @@ class ConceptForgeAI {
         }
 
         try {
-            let results, gaps;
+            console.log('Calling real research API...');
+            const response = await fetch(`${CONFIG.API_ENDPOINT.replace('/validate', '/research')}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query,
+                    sources: ['pubmed', 'arxiv', 'semantic-scholar', 'crossref'],
+                    maxResults: 15
+                })
+            });
 
-            // Check if academic APIs are enabled and we have a real endpoint
-            if (CONFIG.ACADEMIC_APIS && CONFIG.ACADEMIC_APIS.PUBMED_ENABLED && !CONFIG.USE_MOCK_DATA) {
-                // Use real academic API integration
-                const sources = [];
-                if (CONFIG.ACADEMIC_APIS.PUBMED_ENABLED) sources.push('pubmed');
-                if (CONFIG.ACADEMIC_APIS.ARXIV_ENABLED) sources.push('arxiv');
-                if (CONFIG.ACADEMIC_APIS.SEMANTIC_SCHOLAR_ENABLED) sources.push('semantic-scholar');
-                if (CONFIG.ACADEMIC_APIS.CROSSREF_ENABLED) sources.push('crossref');
+            console.log('Research API Response status:', response.status);
 
-                const response = await fetch(`${CONFIG.API_ENDPOINT.replace('/validate', '/research')}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        query: query,
-                        sources: sources,
-                        maxResults: 15
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
-                }
-
-                const data = await response.json();
-                results = data.papers || [];
-                gaps = data.researchGaps || [];
-
-                // Apply frontend filters
-                if (yearFilter) {
-                    results = results.filter(paper => paper.year.toString() === yearFilter);
-                }
-
-                if (domainFilter) {
-                    const domainKeywords = {
-                        'ai': ['artificial intelligence', 'machine learning', 'deep learning', 'neural network'],
-                        'health': ['medical', 'clinical', 'patient', 'healthcare', 'biomedical'],
-                        'finance': ['financial', 'economic', 'banking', 'investment', 'fintech'],
-                        'education': ['educational', 'learning', 'student', 'teaching', 'pedagogy'],
-                        'sustainability': ['sustainable', 'environmental', 'green', 'renewable', 'climate']
-                    };
-
-                    const keywords = domainKeywords[domainFilter] || [];
-                    results = results.filter(paper => {
-                        const text = (paper.title + ' ' + paper.abstract).toLowerCase();
-                        return keywords.some(keyword => text.includes(keyword));
-                    });
-                }
-
-            } else {
-                // Fallback to mock database
-                const filters = {};
-                if (yearFilter) filters.year = yearFilter;
-                if (domainFilter) filters.domain = domainFilter;
-
-                results = this.researchDB.searchPapers(query, filters);
-                gaps = this.researchDB.identifyResearchGaps(query);
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
             }
 
-            this.displayResearchResults(results);
-            this.displayResearchGaps(gaps);
+            const data = await response.json();
+            console.log('Research API Response:', data);
             
-            this.showNotification(`Found ${results.length} relevant papers`, 'success');
+            results = data.papers || [];
+            gaps = data.researchGaps || [];
+
+            // Apply frontend filters
+            if (yearFilter) {
+                results = results.filter(paper => paper.year.toString() === yearFilter);
+            }
+
+            if (domainFilter) {
+                const domainKeywords = {
+                    'ai': ['artificial intelligence', 'machine learning', 'deep learning', 'neural network'],
+                    'health': ['medical', 'clinical', 'patient', 'healthcare', 'biomedical'],
+                    'finance': ['financial', 'economic', 'banking', 'investment', 'fintech'],
+                    'education': ['educational', 'learning', 'student', 'teaching', 'pedagogy'],
+                    'sustainability': ['sustainable', 'environmental', 'green', 'renewable', 'climate']
+                };
+
+                const keywords = domainKeywords[domainFilter] || [];
+                results = results.filter(paper => {
+                    const text = (paper.title + ' ' + paper.abstract).toLowerCase();
+                    return keywords.some(keyword => text.includes(keyword));
+                });
+            }
+
+        } catch (error) {
+            console.error('Research search failed:', error);
+            console.log('Falling back to local database');
+            // Fallback to mock database
+            const filters = {};
+            if (yearFilter) filters.year = yearFilter;
+            if (domainFilter) filters.domain = domainFilter;
+
+            results = this.researchDB.search(query, filters);
+            gaps = this.researchDB.identifyGaps(query, results);
+        }
+
+        this.displayResearchResults(results);
+        this.displayResearchGaps(gaps);
+        
+        this.showNotification(`Found ${results.length} relevant papers from real academic databases`, 'success');
 
         } catch (error) {
             console.error('Research search error:', error);
