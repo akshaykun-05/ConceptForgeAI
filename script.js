@@ -490,7 +490,26 @@ class ConceptForgeAI {
         
         items.forEach((item, index) => {
             const li = document.createElement('li');
-            li.textContent = item;
+            
+            // Make related papers clickable
+            if (elementId === 'relatedPapers') {
+                // Extract paper title from format "Title (Journal, Year)"
+                const match = item.match(/^(.+?)\s*\((.+?),\s*(\d{4})\)$/);
+                if (match) {
+                    const [, title, journal] = match;
+                    li.innerHTML = `
+                        <span class="paper-link" onclick="app.searchPaperByTitle('${title.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-file-alt"></i> ${item}
+                        </span>
+                    `;
+                    li.style.cursor = 'pointer';
+                } else {
+                    li.textContent = item;
+                }
+            } else {
+                li.textContent = item;
+            }
+            
             li.style.animationDelay = `${index * 0.1}s`;
             li.classList.add('fade-in');
             element.appendChild(li);
@@ -1051,6 +1070,14 @@ class ConceptForgeAI {
         this.switchToPage('research');
         setTimeout(() => {
             this.researchQuery.value = industry;
+            this.searchResearch();
+        }, 300);
+    }
+
+    searchPaperByTitle(title) {
+        this.switchToPage('research');
+        setTimeout(() => {
+            this.researchQuery.value = title;
             this.searchResearch();
         }, 300);
     }

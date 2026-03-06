@@ -683,6 +683,24 @@ body {
     border-bottom: none;
 }
 
+.insight-list li .paper-link {
+    color: var(--neon-blue);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.insight-list li .paper-link:hover {
+    color: var(--neon-purple);
+    text-shadow: 0 0 10px var(--neon-purple);
+}
+
+.insight-list li .paper-link i {
+    font-size: 0.9em;
+}
+
 .insight-list li::before {
     content: "•";
     position: absolute;
