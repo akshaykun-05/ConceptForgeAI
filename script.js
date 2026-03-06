@@ -348,6 +348,7 @@ class ConceptForgeAI {
 
     identifyRisks(idea, uniquenessScore, commercialScore) {
         const risks = [];
+        const lowerIdea = idea.toLowerCase();
         
         if (uniquenessScore < 50) {
             risks.push('High market saturation - numerous similar solutions exist in the market');
@@ -357,33 +358,44 @@ class ConceptForgeAI {
             risks.push('Limited monetization clarity - revenue model needs further development');
         }
         
-        if (idea.length < 100) {
-            risks.push('Insufficient concept detail - requires more comprehensive development');
+        // Add contextual risks based on keywords
+        const riskKeywords = {
+            'ai': 'AI model training costs and computational resource requirements',
+            'health': 'Healthcare regulatory compliance (FDA, HIPAA) and approval timelines',
+            'finance': 'Financial regulations, licensing requirements, and security compliance',
+            'education': 'Educational institution adoption cycles and curriculum integration challenges',
+            'blockchain': 'Cryptocurrency volatility and regulatory uncertainty',
+            'social': 'User privacy concerns and data protection regulations',
+            'hardware': 'Manufacturing costs, supply chain dependencies, and inventory risks',
+            'mobile': 'App store approval processes and platform dependency risks',
+            'saas': 'Customer churn rates and subscription model sustainability',
+            'marketplace': 'Two-sided marketplace liquidity and network effects challenges'
+        };
+        
+        for (const [keyword, risk] of Object.entries(riskKeywords)) {
+            if (lowerIdea.includes(keyword) && risks.length < 4) {
+                risks.push(risk);
+            }
         }
         
-        const contextualRisks = [
-            'Regulatory compliance challenges in target markets',
-            'High customer acquisition costs due to market competition',
+        // Fill remaining slots with generic but relevant risks
+        const genericRisks = [
+            'Customer acquisition costs may exceed initial projections',
             'Technical implementation complexity and resource requirements',
-            'Scalability limitations with current proposed architecture',
-            'Intellectual property protection and patent landscape risks',
             'Market timing concerns - early or late market entry',
-            'Dependency on third-party platforms or technologies',
-            'User adoption barriers and behavior change requirements'
+            'Dependency on third-party platforms or technologies'
         ];
         
-        // Add 2-3 contextual risks based on idea content
-        const additionalRisks = contextualRisks
-            .sort(() => 0.5 - Math.random())
-            .slice(0, Math.max(1, 4 - risks.length));
-        
-        risks.push(...additionalRisks);
+        while (risks.length < 4) {
+            risks.push(genericRisks[risks.length]);
+        }
         
         return risks.slice(0, 4);
     }
 
     suggestImprovements(idea, uniquenessScore, commercialScore) {
         const improvements = [];
+        const lowerIdea = idea.toLowerCase();
         
         if (uniquenessScore < 70) {
             improvements.push('Strengthen unique value proposition through deeper market differentiation analysis');
@@ -393,32 +405,79 @@ class ConceptForgeAI {
             improvements.push('Develop comprehensive business model with multiple revenue streams');
         }
         
+        // Add contextual improvements based on keywords
+        const improvementKeywords = {
+            'ai': 'Implement explainable AI features to build user trust and transparency',
+            'health': 'Conduct clinical validation studies and establish medical advisory board',
+            'finance': 'Obtain necessary financial licenses and establish banking partnerships',
+            'education': 'Partner with educational institutions for pilot programs and validation',
+            'social': 'Implement robust content moderation and community management systems',
+            'ecommerce': 'Optimize conversion funnel and implement personalization features',
+            'saas': 'Develop freemium model with clear upgrade path and value demonstration',
+            'blockchain': 'Build community governance model and token economics framework',
+            'mobile': 'Optimize app store presence and implement viral growth mechanisms',
+            'marketplace': 'Focus on supply-side acquisition first to ensure marketplace liquidity'
+        };
+        
+        for (const [keyword, improvement] of Object.entries(improvementKeywords)) {
+            if (lowerIdea.includes(keyword) && improvements.length < 5) {
+                improvements.push(improvement);
+            }
+        }
+        
+        // Fill remaining slots with strategic improvements
         const strategicImprovements = [
-            'Conduct extensive competitor analysis and market positioning study',
             'Create detailed user personas and validate through customer interviews',
             'Develop minimum viable product (MVP) with core feature set for market testing',
             'Establish strategic partnerships within target industry ecosystem',
-            'Investigate intellectual property landscape and protection strategies',
             'Design scalable technology architecture for future growth',
-            'Create go-to-market strategy with clear customer acquisition plan',
-            'Develop financial projections and funding requirements analysis'
+            'Create go-to-market strategy with clear customer acquisition plan'
         ];
         
-        const additionalImprovements = strategicImprovements
-            .sort(() => 0.5 - Math.random())
-            .slice(0, Math.max(2, 5 - improvements.length));
+        while (improvements.length < 5) {
+            improvements.push(strategicImprovements[improvements.length - 2] || strategicImprovements[0]);
+        }
             
-        improvements.push(...additionalImprovements);
-        
         return improvements.slice(0, 5);
     }
 
     generateRelatedResearch(idea) {
-        // Use the research database to find relevant papers
-        const results = this.researchDB.searchPapers(idea);
-        return results.slice(0, 4).map(paper => 
-            `${paper.title} (${paper.journal}, ${paper.year})`
-        );
+        const lowerIdea = idea.toLowerCase();
+        const paperTopics = [];
+        
+        // Generate topics based on idea keywords
+        const topicKeywords = {
+            'ai': ['Machine Learning Applications', 'Artificial Intelligence Systems', 'Deep Learning Methods'],
+            'health': ['Digital Health Interventions', 'Clinical Decision Support', 'Patient Outcomes'],
+            'finance': ['Financial Technology Innovation', 'Digital Payment Systems', 'Risk Management'],
+            'education': ['Educational Technology', 'Learning Analytics', 'Student Engagement'],
+            'blockchain': ['Distributed Ledger Technology', 'Cryptocurrency Systems', 'Smart Contracts'],
+            'sustainability': ['Sustainable Technology', 'Environmental Impact', 'Green Innovation'],
+            'iot': ['Internet of Things', 'Connected Devices', 'Sensor Networks'],
+            'mobile': ['Mobile Application Development', 'User Experience Design', 'Mobile Commerce'],
+            'social': ['Social Network Analysis', 'User Behavior Patterns', 'Community Dynamics'],
+            'ecommerce': ['E-commerce Optimization', 'Consumer Behavior', 'Digital Retail Strategies']
+        };
+        
+        for (const [keyword, topics] of Object.entries(topicKeywords)) {
+            if (lowerIdea.includes(keyword)) {
+                paperTopics.push(...topics);
+            }
+        }
+        
+        // If no specific topics found, use generic business topics
+        if (paperTopics.length === 0) {
+            paperTopics.push('Innovation Management', 'Business Model Design', 'Market Entry Strategies', 'Technology Adoption');
+        }
+        
+        const journals = ['Nature', 'Science', 'IEEE Transactions', 'Harvard Business Review', 'MIT Sloan', 'Journal of Business Research'];
+        const years = [2022, 2023, 2024];
+        
+        return paperTopics.slice(0, 4).map((topic, index) => {
+            const journal = journals[index % journals.length];
+            const year = years[Math.floor(Math.random() * years.length)];
+            return `${topic} in Modern Markets (${journal}, ${year})`;
+        });
     }
 
     displayResults(result) {
@@ -563,77 +622,90 @@ class ConceptForgeAI {
         try {
             let results, gaps;
             
-            console.log('Calling real research API...');
-            const response = await fetch(`${CONFIG.API_ENDPOINT.replace('/validate', '/research')}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    query: query,
-                    sources: ['pubmed', 'arxiv', 'semantic-scholar', 'crossref'],
-                    maxResults: 15
-                })
-            });
-
-            console.log('Research API Response status:', response.status);
-
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log('Research API Response:', data);
+            // Check if we should use real API
+            const researchEndpoint = CONFIG.API_ENDPOINT.replace('/validate', '/research');
+            console.log('Research API Endpoint:', researchEndpoint);
+            console.log('USE_MOCK_DATA:', CONFIG.USE_MOCK_DATA);
             
-            results = data.papers || [];
-            gaps = data.researchGaps || [];
-
-            // Apply frontend filters
-            if (yearFilter) {
-                results = results.filter(paper => paper.year.toString() === yearFilter);
-            }
-
-            if (domainFilter) {
-                const domainKeywords = {
-                    'ai': ['artificial intelligence', 'machine learning', 'deep learning', 'neural network'],
-                    'health': ['medical', 'clinical', 'patient', 'healthcare', 'biomedical'],
-                    'finance': ['financial', 'economic', 'banking', 'investment', 'fintech'],
-                    'education': ['educational', 'learning', 'student', 'teaching', 'pedagogy'],
-                    'sustainability': ['sustainable', 'environmental', 'green', 'renewable', 'climate']
-                };
-
-                const keywords = domainKeywords[domainFilter] || [];
-                results = results.filter(paper => {
-                    const text = (paper.title + ' ' + paper.abstract).toLowerCase();
-                    return keywords.some(keyword => text.includes(keyword));
+            if (!CONFIG.USE_MOCK_DATA && researchEndpoint !== 'YOUR_API_GATEWAY_ENDPOINT_HERE/research') {
+                console.log('Calling real research API...');
+                const response = await fetch(researchEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        sources: ['pubmed', 'arxiv', 'semantic-scholar', 'crossref'],
+                        maxResults: 15
+                    })
                 });
-            }
 
-            this.displayResearchResults(results);
-            this.displayResearchGaps(gaps);
-            
-            this.showNotification(`Found ${results.length} relevant papers from real academic databases`, 'success');
+                console.log('Research API Response status:', response.status);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Research API Response:', data);
+                    
+                    results = data.papers || [];
+                    gaps = data.researchGaps || [];
+
+                    // Apply frontend filters
+                    if (yearFilter) {
+                        results = results.filter(paper => paper.year.toString() === yearFilter);
+                    }
+
+                    if (domainFilter) {
+                        const domainKeywords = {
+                            'ai': ['artificial intelligence', 'machine learning', 'deep learning', 'neural network'],
+                            'health': ['medical', 'clinical', 'patient', 'healthcare', 'biomedical'],
+                            'finance': ['financial', 'economic', 'banking', 'investment', 'fintech'],
+                            'education': ['educational', 'learning', 'student', 'teaching', 'pedagogy'],
+                            'sustainability': ['sustainable', 'environmental', 'green', 'renewable', 'climate']
+                        };
+
+                        const keywords = domainKeywords[domainFilter] || [];
+                        results = results.filter(paper => {
+                            const text = (paper.title + ' ' + paper.abstract).toLowerCase();
+                            return keywords.some(keyword => text.includes(keyword));
+                        });
+                    }
+
+                    this.displayResearchResults(results);
+                    this.displayResearchGaps(gaps);
+                    
+                    this.showNotification(`Found ${results.length} papers from academic databases`, 'success');
+                    return; // Success - exit early
+                } else {
+                    console.error('API error:', response.status);
+                    throw new Error(`API error: ${response.status}`);
+                }
+            } else {
+                console.log('Using mock data (API not configured or USE_MOCK_DATA=true)');
+            }
 
         } catch (error) {
             console.error('Research search error:', error);
-            this.showNotification('Research search failed. Using local database.', 'warning');
-            
-            // Fallback to mock database
-            const filters = {};
-            if (yearFilter) filters.year = yearFilter;
-            if (domainFilter) filters.domain = domainFilter;
+            console.log('Falling back to local database');
+        }
+        
+        // Fallback to mock database
+        this.showNotification('Using local research database', 'info');
+        
+        const filters = {};
+        if (yearFilter) filters.year = yearFilter;
+        if (domainFilter) filters.domain = domainFilter;
 
-            const results = this.researchDB.searchPapers(query, filters);
-            const gaps = this.researchDB.identifyResearchGaps(query);
+        const results = this.researchDB.searchPapers(query, filters);
+        const gaps = this.researchDB.identifyResearchGaps(query);
 
-            this.displayResearchResults(results);
-            this.displayResearchGaps(gaps);
-        } finally {
-            // Reset loading state
-            if (this.searchResearchBtn) {
-                this.searchResearchBtn.disabled = false;
-                this.searchResearchBtn.innerHTML = '<i class="fas fa-search"></i> Search Papers';
-            }
+        this.displayResearchResults(results);
+        this.displayResearchGaps(gaps);
+        
+        // Reset loading state
+        if (this.searchResearchBtn) {
+            this.searchResearchBtn.disabled = false;
+            this.searchResearchBtn.innerHTML = '<i class="fas fa-search"></i> Search Papers';
         }
     }
 

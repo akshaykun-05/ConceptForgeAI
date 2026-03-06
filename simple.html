@@ -346,9 +346,10 @@
     <script>
         // Simple configuration
         const CONFIG = {
+            API_ENDPOINT: 'https://fsnpltvv61.execute-api.us-east-1.amazonaws.com/prod/validate',
             MAX_IDEA_LENGTH: 2000,
             MIN_IDEA_LENGTH: 10,
-            USE_MOCK_DATA: true
+            USE_MOCK_DATA: false
         };
 
         class SimpleConceptForge {
@@ -401,12 +402,29 @@
                 this.setLoadingState(true);
                 
                 try {
-                    // Simulate API call
-                    await this.delay(2000);
-                    const result = this.generateMockValidation(idea);
-                    this.displayResults(result);
+                    if (CONFIG.USE_MOCK_DATA) {
+                        await this.delay(2000);
+                        const result = this.generateMockValidation(idea);
+                        this.displayResults(result);
+                    } else {
+                        const response = await fetch(CONFIG.API_ENDPOINT, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ idea: idea })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}`);
+                        }
+
+                        const result = await response.json();
+                        this.displayResults(result);
+                    }
                     this.showNotification('Validation completed successfully!', 'success');
                 } catch (error) {
+                    console.error('Error:', error);
                     this.showNotification('Sorry, there was an error. Please try again.', 'error');
                 } finally {
                     this.setLoadingState(false);

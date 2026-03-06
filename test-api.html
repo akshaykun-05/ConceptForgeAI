@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test - ConceptForgeAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #fff;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #00d4ff 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        h2 {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            padding: 1rem;
+            font-family: inherit;
+            margin-bottom: 1rem;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #00d4ff 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .success {
+            border-color: #06ffa5;
+        }
+        
+        .error {
+            border-color: #ff006e;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-left: 1rem;
+        }
+        
+        .status.success {
+            background: rgba(6, 255, 165, 0.2);
+            color: #06ffa5;
+        }
+        
+        .status.error {
+            background: rgba(255, 0, 110, 0.2);
+            color: #ff006e;
+        }
+        
+        .status.loading {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 ConceptForgeAI API Test Suite</h1>
+        
+        <div class="test-section">
+            <h2>1. Validation API Test</h2>
+            <p>Test the idea validation endpoint with dynamic recommendations</p>
+            <textarea id="ideaInput" placeholder="Enter your idea here...">An AI-powered mobile app for personalized health tracking and wellness recommendations using machine learning</textarea>
+            <button onclick="testValidation()">Test Validation API</button>
+            <div id="validationResult" class="result" style="display:none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. Research API Test</h2>
+            <p>Test the research paper search endpoint</p>
+            <textarea id="researchQuery" placeholder="Enter research query...">artificial intelligence machine learning</textarea>
+            <button onclick="testResearch()">Test Research API</button>
+            <div id="researchResult" class="result" style="display:none;"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. Multiple Idea Test</h2>
+            <p>Test with different ideas to verify dynamic recommendations</p>
+            <button onclick="testMultipleIdeas()">Run Multiple Tests</button>
+            <div id="multipleResult" class="result" style="display:none;"></div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'https://fsnpltvv61.execute-api.us-east-1.amazonaws.com/prod';
+        
+        async function testValidation() {
+            const idea = document.getElementById('ideaInput').value;
+            const resultDiv = document.getElementById('validationResult');
+            const button = event.target;
+            
+            button.disabled = true;
+            button.textContent = 'Testing...';
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Calling validation API...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/validate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ idea })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `Error: ${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Error: ${error.message}`;
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Test Validation API';
+            }
+        }
+        
+        async function testResearch() {
+            const query = document.getElementById('researchQuery').value;
+            const resultDiv = document.getElementById('researchResult');
+            const button = event.target;
+            
+            button.disabled = true;
+            button.textContent = 'Testing...';
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Calling research API...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/research`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: query,
+                        sources: ['arxiv', 'pubmed'],
+                        maxResults: 5
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = JSON.stringify(data, null, 2);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `Error: ${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Error: ${error.message}`;
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Test Research API';
+            }
+        }
+        
+        async function testMultipleIdeas() {
+            const ideas = [
+                'An AI-powered mobile app for personalized health tracking',
+                'A blockchain-based platform for secure financial transactions',
+                'An educational technology solution for online learning',
+                'A sustainable energy management system for smart homes'
+            ];
+            
+            const resultDiv = document.getElementById('multipleResult');
+            const button = event.target;
+            
+            button.disabled = true;
+            button.textContent = 'Testing...';
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Running multiple tests...\n\n';
+            
+            for (let i = 0; i < ideas.length; i++) {
+                const idea = ideas[i];
+                resultDiv.textContent += `\n--- Test ${i + 1}: ${idea.substring(0, 50)}... ---\n`;
+                
+                try {
+                    const response = await fetch(`${API_BASE}/validate`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ idea })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        resultDiv.textContent += `✓ Success\n`;
+                        resultDiv.textContent += `  Uniqueness: ${data.uniquenessScore}\n`;
+                        resultDiv.textContent += `  Commercial: ${data.commercialScore}\n`;
+                        resultDiv.textContent += `  Risk: ${data.riskLevel}\n`;
+                        resultDiv.textContent += `  Industries: ${data.targetIndustries.join(', ')}\n`;
+                        resultDiv.textContent += `  Key Risks:\n`;
+                        data.keyRisks.forEach(risk => {
+                            resultDiv.textContent += `    - ${risk}\n`;
+                        });
+                        resultDiv.textContent += `  Improvements:\n`;
+                        data.improvements.forEach(imp => {
+                            resultDiv.textContent += `    - ${imp}\n`;
+                        });
+                        resultDiv.textContent += `  Related Papers:\n`;
+                        data.relatedPapers.forEach(paper => {
+                            resultDiv.textContent += `    - ${paper}\n`;
+                        });
+                    } else {
+                        resultDiv.textContent += `✗ Error: ${data.error}\n`;
+                    }
+                } catch (error) {
+                    resultDiv.textContent += `✗ Error: ${error.message}\n`;
+                }
+                
+                resultDiv.textContent += '\n';
+            }
+            
+            resultDiv.className = 'result success';
+            resultDiv.textContent += '\n=== All tests completed ===';
+            button.disabled = false;
+            button.textContent = 'Run Multiple Tests';
+        }
+    </script>
+</body>
+</html>
