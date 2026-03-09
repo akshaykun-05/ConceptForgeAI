@@ -625,9 +625,9 @@ class ConceptForgeAI {
             // Check if we should use real API
             const researchEndpoint = CONFIG.API_ENDPOINT.replace('/validate', '/research');
             console.log('Research API Endpoint:', researchEndpoint);
-            console.log('USE_MOCK_DATA:', CONFIG.USE_MOCK_DATA);
+            console.log('USE_REAL_RESEARCH:', CONFIG.USE_REAL_RESEARCH);
             
-            if (!CONFIG.USE_MOCK_DATA && researchEndpoint !== 'YOUR_API_GATEWAY_ENDPOINT_HERE/research') {
+            if (CONFIG.USE_REAL_RESEARCH && researchEndpoint !== 'YOUR_API_GATEWAY_ENDPOINT_HERE/research') {
                 console.log('Calling real research API...');
                 const response = await fetch(researchEndpoint, {
                     method: 'POST',
@@ -681,7 +681,7 @@ class ConceptForgeAI {
                     throw new Error(`API error: ${response.status}`);
                 }
             } else {
-                console.log('Using mock data (API not configured or USE_MOCK_DATA=true)');
+                console.log('USE_REAL_RESEARCH is false, using local database');
             }
 
         } catch (error) {

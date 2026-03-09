@@ -8,6 +8,7 @@ const CONFIG = {
     // Environment Settings
     ENVIRONMENT: 'production',
     USE_MOCK_DATA: true, // Temporarily true until Bedrock access is configured
+    USE_REAL_RESEARCH: true, // Always use real research APIs (arXiv, PubMed)
     
     // Application Settings
     MAX_IDEA_LENGTH: 2000,
