@@ -710,9 +710,15 @@ class ConceptForgeAI {
     }
 
     displayResearchResults(results) {
+        console.log('Displaying research results:', results);
         const resultsSection = this.researchResults;
         const papersList = document.getElementById('papersList');
         const resultsCount = document.getElementById('resultsCount');
+
+        if (!papersList) {
+            console.error('papersList element not found!');
+            return;
+        }
 
         resultsCount.textContent = `${results.length} papers found`;
         
@@ -728,12 +734,18 @@ class ConceptForgeAI {
             `;
         } else {
             results.forEach((paper, index) => {
+                console.log(`Paper ${index}:`, paper);
                 const paperElement = document.createElement('div');
                 paperElement.className = 'paper-item';
                 paperElement.style.animationDelay = `${index * 0.1}s`;
                 
-                // Format authors
-                const authors = Array.isArray(paper.authors) ? paper.authors.slice(0, 3).join(', ') : 'Unknown Authors';
+                // Format authors - handle different formats
+                let authors = 'Unknown Authors';
+                if (Array.isArray(paper.authors) && paper.authors.length > 0) {
+                    authors = paper.authors.slice(0, 3).join(', ');
+                } else if (typeof paper.authors === 'string') {
+                    authors = paper.authors;
+                }
                 const moreAuthors = Array.isArray(paper.authors) && paper.authors.length > 3 ? ` et al.` : '';
                 
                 // Format citation info
@@ -742,15 +754,21 @@ class ConceptForgeAI {
                 // Format source badge
                 const sourceBadge = paper.source ? `<span class="source-badge">${paper.source}</span>` : '';
                 
+                // Ensure we have required fields
+                const title = paper.title || 'Untitled';
+                const journal = paper.journal || 'Unknown Journal';
+                const year = paper.year || 'N/A';
+                const abstract = paper.abstract || 'Abstract not available';
+                
                 paperElement.innerHTML = `
                     <div class="paper-header">
-                        <div class="paper-title">${paper.title}</div>
+                        <div class="paper-title">${title}</div>
                         ${sourceBadge}
                     </div>
                     <div class="paper-meta">
-                        ${authors}${moreAuthors} • ${paper.journal} • ${paper.year} • ${citationInfo}
+                        ${authors}${moreAuthors} • ${journal} • ${year} • ${citationInfo}
                     </div>
-                    <div class="paper-abstract">${paper.abstract}</div>
+                    <div class="paper-abstract">${abstract}</div>
                     <div class="paper-actions">
                         ${paper.doi ? `<a href="https://doi.org/${paper.doi}" target="_blank" class="action-chip">
                             <i class="fas fa-external-link-alt"></i> View Paper
@@ -758,17 +776,18 @@ class ConceptForgeAI {
                         ${paper.url ? `<a href="${paper.url}" target="_blank" class="action-chip">
                             <i class="fas fa-link"></i> Source
                         </a>` : ''}
-                        <a href="#" class="action-chip" onclick="app.validateFromPaper('${paper.title.replace(/'/g, "\\'")}')">
+                        ${paper.arxivId ? `<a href="https://arxiv.org/abs/${paper.arxivId}" target="_blank" class="action-chip">
+                            <i class="fas fa-file-pdf"></i> arXiv PDF
+                        </a>` : ''}
+                        <a href="#" class="action-chip" onclick="app.validateFromPaper('${title.replace(/'/g, "\\'")}'); return false;">
                             <i class="fas fa-flask"></i> Validate Similar Idea
-                        </a>
-                        <a href="#" class="action-chip" onclick="app.findRelatedValidations('${paper.journal}')">
-                            <i class="fas fa-history"></i> Related Validations
                         </a>
                     </div>
                 `;
                 paperElement.classList.add('fade-in');
                 papersList.appendChild(paperElement);
             });
+            console.log(`Added ${results.length} papers to DOM`);
         }
     }
 

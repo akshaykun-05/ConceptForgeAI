@@ -276,8 +276,10 @@ exports.handler = async (event) => {
         // Generate research gaps based on the query and results
         const researchGaps = generateResearchGaps(query, limitedResults);
         
-        // Store search analytics
-        await storeSearchAnalytics(query, limitedResults.length, sources);
+        // Store search analytics (don't fail if this errors)
+        storeSearchAnalytics(query, limitedResults.length, sources).catch(err => {
+            console.error('Analytics storage error (non-fatal):', err.message);
+        });
         
         const response = {
             query: query,
