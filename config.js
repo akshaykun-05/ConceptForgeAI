@@ -7,7 +7,7 @@ const CONFIG = {
     
     // Environment Settings
     ENVIRONMENT: 'production',
-    USE_MOCK_DATA: false, // Set to false for real AI analysis
+    USE_MOCK_DATA: true, // Temporarily true until Bedrock access is configured
     
     // Application Settings
     MAX_IDEA_LENGTH: 2000,

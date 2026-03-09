@@ -276,7 +276,9 @@ class ResearchDatabase {
                 abstract: "This study examines the application of machine learning algorithms in predicting startup success rates and identifying key innovation factors in business development.",
                 keywords: ["machine learning", "startup", "innovation", "prediction", "business"],
                 domain: "ai",
-                citations: 127
+                citations: 127,
+                url: "https://scholar.google.com/scholar?q=machine+learning+startup+success+prediction",
+                source: "Mock Database"
             },
             {
                 id: 2,
@@ -287,7 +289,9 @@ class ResearchDatabase {
                 abstract: "Analysis of digital health innovation patterns and development of comprehensive market validation frameworks for healthcare technology startups.",
                 keywords: ["digital health", "innovation", "validation", "healthcare", "technology"],
                 domain: "health",
-                citations: 89
+                citations: 89,
+                url: "https://scholar.google.com/scholar?q=digital+health+innovation+validation",
+                source: "Mock Database"
             },
             {
                 id: 3,
@@ -298,7 +302,9 @@ class ResearchDatabase {
                 abstract: "Comprehensive analysis of FinTech innovation patterns, market disruption mechanisms, and success factors in financial technology startups.",
                 keywords: ["fintech", "innovation", "disruption", "financial technology", "market analysis"],
                 domain: "finance",
-                citations: 156
+                citations: 156,
+                url: "https://scholar.google.com/scholar?q=fintech+innovation+market+disruption",
+                source: "Mock Database"
             },
             {
                 id: 4,
@@ -309,7 +315,9 @@ class ResearchDatabase {
                 abstract: "Market analysis of educational technology solutions and optimization strategies for improving learning outcomes through digital platforms.",
                 keywords: ["edtech", "education", "learning outcomes", "digital platforms", "market analysis"],
                 domain: "education",
-                citations: 73
+                citations: 73,
+                url: "https://scholar.google.com/scholar?q=educational+technology+learning+outcomes",
+                source: "Mock Database"
             },
             {
                 id: 5,
@@ -320,7 +328,9 @@ class ResearchDatabase {
                 abstract: "Investigation of sustainable business model innovation patterns and factors influencing green technology adoption in various industries.",
                 keywords: ["sustainability", "green technology", "business model", "innovation", "adoption"],
                 domain: "sustainability",
-                citations: 94
+                citations: 94,
+                url: "https://scholar.google.com/scholar?q=sustainable+business+model+green+technology",
+                source: "Mock Database"
             },
             {
                 id: 6,
@@ -331,7 +341,9 @@ class ResearchDatabase {
                 abstract: "Application of AI techniques in market research methodologies and consumer behavior analysis for improved business decision making.",
                 keywords: ["artificial intelligence", "market research", "consumer behavior", "business intelligence"],
                 domain: "ai",
-                citations: 112
+                citations: 112,
+                url: "https://scholar.google.com/scholar?q=AI+market+research+consumer+behavior",
+                source: "Mock Database"
             },
             {
                 id: 7,
@@ -342,7 +354,9 @@ class ResearchDatabase {
                 abstract: "Exploration of blockchain technology applications in supply chain management and innovation opportunities for startups.",
                 keywords: ["blockchain", "supply chain", "innovation", "technology", "management"],
                 domain: "finance",
-                citations: 68
+                citations: 68,
+                url: "https://scholar.google.com/scholar?q=blockchain+supply+chain+innovation",
+                source: "Mock Database"
             },
             {
                 id: 8,
